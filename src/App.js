@@ -1,13 +1,14 @@
 import { Component } from "react";
-import Main from "./components/Main";
+
+import Pool from "./components/Pool";
 import List from "./components/List";
-import "./styles/App.scss";
+import "./App.scss";
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            pool: [
+            posts: [
                 {
                     id: 1,
                     title: "It was easy to spot her.",
@@ -97,34 +98,121 @@ class App extends Component {
                     ],
                     disabled: false,
                 },
+
+                {
+                    id: 6,
+                    title: "The red ball sat proudly at the top of the toybox.",
+                    description:
+                        " It had been the last to be played with and anticipated it would be the next as well. The other toys grumbled beneath. At one time each had held the spot of the red ball, but over time they had sunk deeper and deeper into the toy box.",
+                    comments: [
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 2,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 2,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 3,
+                        },
+                    ],
+                    disabled: false,
+                },
+
+                {
+                    id: 7,
+                    title: "I haven't bailed on writing.",
+                    description:
+                        "Look, I'm generating a random paragraph at this very moment in an attempt to get my writing back on track. I am making an effort. I will start writing consistently again!",
+                    comments: [
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 5,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 4.9,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 4,
+                        },
+                    ],
+                    disabled: false,
+                },
+
+                {
+                    id: 8,
+                    title: "The day had begun on a bright note.",
+                    description:
+                        "Why couldn't she understand that? She knew he'd completely changed his life around her eating habits, so why couldn't she give him a break this one time? She wasn't even supposed to have found out. Yes, he had promised her and yes, he had broken that promise, but still in his mind, all it had been was just a burger.",
+                    comments: [
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 3,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 2,
+                        },
+                        {
+                            body: "He sat staring at the person in the train stopped at the station going in the opposite direction.",
+                            rating: 4,
+                        },
+                    ],
+                    disabled: false,
+                },
             ],
+            displayedPosts: [],
         };
     }
 
-    togglePoolVisual(id) {
-        const postIndex = this.state.pool.findIndex((post, index) => post.id === id);
+    togglePostDisabledProperty(state, index, name) {
+        const posts = [...state[name]];
+        const post = { ...posts[index] };
+        post.disabled = !post.disabled;
+        posts[index] = post;
+        return posts;
+    }
+
+    togglePostVisibility(id) {
+        const postIndex = this.state.posts.findIndex((post) => post.id === id);
+        const displayedPostIndex = this.state.displayedPosts.findIndex((post) => post.id === id);
         this.setState((state) => {
-            const pool = [...state.pool];
-            const post = { ...pool[postIndex] };
-            post.disabled = !post.disabled;
-            pool[postIndex] = post;
+            const posts = this.togglePostDisabledProperty(state, postIndex, "posts");
+            const displayedPosts = this.togglePostDisabledProperty(state, displayedPostIndex, "displayedPosts");
 
             return {
-                pool,
+                posts,
+                displayedPosts,
             };
         });
+    }
+
+    getPosts(count, page) {
+        const posts = [...this.state.posts];
+        const start = (page - 1) * count;
+        const end = start + count;
+        const toBeDisplayedPosts = posts.slice(start, end);
+        this.setState({ displayedPosts: toBeDisplayedPosts });
     }
 
     render() {
         return (
             <div className="App">
-                <Main pool={this.state.pool} />
+                <Pool
+                    posts={this.state.displayedPosts}
+                    getPosts={(count, page) => this.getPosts(count, page)}
+                    postsCount={this.state.posts.length}
+                />
                 <aside className="lists">
                     {[1, 2].map((item) => (
                         <List
-                            key={`list-${item}`}
-                            pool={this.state.pool}
-                            togglePoolVisual={(id) => this.togglePoolVisual(id)}
+                            key={item}
+                            posts={this.state.displayedPosts}
+                            togglePostVisibility={(id) => this.togglePostVisibility(id)}
                         />
                     ))}
                 </aside>

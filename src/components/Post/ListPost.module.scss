@@ -1,0 +1,15 @@
+@import "../../base";
+
+.listPost {
+    // display: flex;
+    align-items: center;
+    // justify-content: space-between;
+    display: grid;
+    grid-template-columns: 3fr 2fr 0.5fr;
+}
+
+.del {
+    i {
+        font-size: 1.5rem;
+    }
+}

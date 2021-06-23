@@ -1,0 +1,32 @@
+@import "../../../base";
+
+.pagination {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: 1rem;
+
+    ul {
+        display: flex;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+
+        button {
+            border: none;
+            color: inherit;
+            font-family: inherit;
+            font-size: 2rem;
+            text-decoration: underline;
+
+            &:hover {
+                color: $freecolor;
+            }
+        }
+    }
+}
+
+.activ {
+    color: $freecolor;
+}

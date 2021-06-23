@@ -1,12 +1,19 @@
 import { Component } from "react";
+
 import StarRatings from "react-star-ratings";
 
 class Comment extends Component {
     // props -> (body, rating)
     render() {
         return (
-            <div className="comment">
-                <p className="body">{this.props.body}</p>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                }}
+            >
+                <p>{this.props.body}</p>
                 <div>
                     <StarRatings
                         rating={this.props.rating}

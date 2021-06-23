@@ -1,0 +1,22 @@
+@import "../../base";
+
+.mainPost {
+    margin: 1rem 0;
+    border: 1px solid $txtcolor;
+    border-radius: 1rem;
+    padding: 0 1rem;
+}
+
+.disabled {
+    background-color: #da0037;
+    color: white;
+}
+
+.title {
+    text-align: center;
+}
+
+.description {
+    text-indent: 1rem;
+    text-align: justify;
+}
