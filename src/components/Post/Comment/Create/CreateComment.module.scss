@@ -1,0 +1,11 @@
+@import "../../../../base";
+
+.createComment {
+    @extend %button;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}

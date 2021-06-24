@@ -2,3 +2,14 @@ $bgcolor: #eeeeee;
 $txtcolor: #222831;
 $freecolor: #ff2e63;
 $fontFamily: "Roboto", sans-serif;
+
+%button {
+    button {
+        border: none;
+        cursor: pointer;
+        color: inherit;
+        &:hover {
+            transform: scale(1.1);
+        }
+    }
+}

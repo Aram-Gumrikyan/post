@@ -18,7 +18,7 @@ class ListPost extends Component {
                     rating={rating}
                     numberOfStars={5}
                     starEmptyColor={"#252A34"}
-                    starRatedColor={"#3EDBF0"}
+                    starRatedColor={this.props.rating > 4 ? "green" : this.props.rating > 3 ? "yellow" : "red"}
                     starDimension="25px"
                     starSpacing="0px"
                     name="rating"

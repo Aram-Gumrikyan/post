@@ -3,14 +3,15 @@
 .list {
     color: $txtcolor;
 
-    button {
-        border: none;
-        cursor: pointer;
-        color: inherit;
-        &:hover {
-            transform: scale(1.1);
-        }
-    }
+    @extend %button;
+    // button {
+    //     border: none;
+    //     cursor: pointer;
+    //     color: inherit;
+    //     &:hover {
+    //         transform: scale(1.1);
+    //     }
+    // };
 }
 .buttons {
     display: flex;

@@ -1,0 +1,21 @@
+@import "../../../../../base";
+
+.commentForm {
+    margin-top: 1rem;
+    padding: 1rem 5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    button {
+        margin: 1rem;
+    }
+
+    textarea {
+        width: 200%;
+        outline: none;
+        // border: ;
+        padding: 1rem;
+    }
+}

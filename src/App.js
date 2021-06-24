@@ -169,10 +169,22 @@ class App extends Component {
         };
     }
 
-    togglePostDisabledProperty(state, index, name) {
+    chengPostProperty(state, index, name, action, value) {
         const posts = [...state[name]];
         const post = { ...posts[index] };
-        post.disabled = !post.disabled;
+        if (action === "toggle") {
+            post.disabled = !post.disabled;
+            posts[index] = post;
+            return posts;
+        }
+
+        const comment = {
+            body: value.body,
+            rating: value.rating,
+        };
+        const comments = [...post.comments];
+        comments.push(comment);
+        post.comments = comments;
         posts[index] = post;
         return posts;
     }
@@ -181,8 +193,25 @@ class App extends Component {
         const postIndex = this.state.posts.findIndex((post) => post.id === id);
         const displayedPostIndex = this.state.displayedPosts.findIndex((post) => post.id === id);
         this.setState((state) => {
-            const posts = this.togglePostDisabledProperty(state, postIndex, "posts");
-            const displayedPosts = this.togglePostDisabledProperty(state, displayedPostIndex, "displayedPosts");
+            const posts = this.chengPostProperty(state, postIndex, "posts", "toggle");
+            const displayedPosts = this.chengPostProperty(state, displayedPostIndex, "displayedPosts", "toggle");
+
+            return {
+                posts,
+                displayedPosts,
+            };
+        });
+    }
+
+    addComment(body, rating, id) {
+        const postIndex = this.state.posts.findIndex((post) => post.id === id);
+        const displayedPostIndex = this.state.displayedPosts.findIndex((post) => post.id === id);
+        this.setState((state) => {
+            const posts = this.chengPostProperty(state, postIndex, "posts", "add", { body, rating });
+            const displayedPosts = this.chengPostProperty(state, displayedPostIndex, "displayedPosts", "add", {
+                body,
+                rating,
+            });
 
             return {
                 posts,
@@ -199,13 +228,42 @@ class App extends Component {
         this.setState({ displayedPosts: toBeDisplayedPosts });
     }
 
+    searchTextInPost(post, text) {
+        let match = false;
+
+        if (post.title.includes(text) || post.description.includes(text)) {
+            return true;
+        }
+
+        post.comments.forEach((comment) => {
+            if (comment.body.includes(text)) {
+                match = true;
+                return;
+            }
+        });
+
+        return match;
+    }
+
+    search(text) {
+        const posts = this.state.posts.reduce((posts, post) => {
+            const match = this.searchTextInPost(post, text);
+            match && posts.push(post);
+            return posts;
+        }, []);
+
+        this.setState({ displayedPosts: posts });
+    }
+
     render() {
         return (
             <div className="App">
                 <Pool
+                    search={(text) => this.search(text)}
                     posts={this.state.displayedPosts}
                     getPosts={(count, page) => this.getPosts(count, page)}
                     postsCount={this.state.posts.length}
+                    addComment={(body, rating, id) => this.addComment(body, rating, id)}
                 />
                 <aside className="lists">
                     {[1, 2].map((item) => (

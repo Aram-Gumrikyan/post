@@ -55,9 +55,16 @@ class Pagination extends Component {
         return (
             <div className={styles.pagination}>
                 <ul>{pages}</ul>
-                <form onSubmit={(e) => this.chengCount(e)}>
+                <form onSubmit={(e) => this.chengCount(e)} id="countForm">
                     <label htmlFor="count">Count: </label>
-                    <input type="number" name="count" id="count" max={this.props.postsCount} min="1" />
+                    <input
+                        type="number"
+                        name="count"
+                        id="count"
+                        max={this.props.postsCount}
+                        min="1"
+                        defaultValue={this.state.count}
+                    />
                 </form>
             </div>
         );
