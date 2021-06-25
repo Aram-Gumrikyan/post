@@ -8,9 +8,8 @@ class CommentForm extends Component {
         super(props);
         this.state = {
             rating: 0,
-            comment: <span>{""}</span>,
         };
-
+        this.comment = <span>{""}</span>;
         this.emojis = ["-smile-beam", "-sad-cry", "-grin-squint-tears", "-sad-tear"];
     }
 
@@ -22,30 +21,22 @@ class CommentForm extends Component {
 
     addComment(e) {
         e.preventDefault();
-        this.props.addComment(this.state.comment, this.state.rating, this.props.id);
+        this.props.addComment(this.comment, this.state.rating, this.props.id);
+        console.log(this.comment);
     }
 
     commentChenged(e) {
         const newComment = e.target.value;
-
-        this.setState(({ comment }) => {
-            const span = <span>{comment.props.children + newComment[newComment.length - 1]}</span>;
-            return {
-                comment: span,
-            };
-        });
+        const oldComment = this.comment.props.children;
+        const span = <span>{[oldComment, newComment[newComment.length - 1]]}</span>;
+        this.comment = span;
     }
 
     emojiClicked(e) {
         const emoji = e.target;
-        const emojiJSX = <i className={emoji.className} key={emoji.getAttribute("index")}></i>;
-
-        this.setState(({ comment }) => {
-            const span = React.createElement("span", null, [comment.props.children, emojiJSX]);
-            return {
-                comment: span,
-            };
-        });
+        const emojiReact = <i className={emoji.className} key={emoji.getAttribute("index")}></i>;
+        const span = <span>{[this.comment.props.children, emojiReact]}</span>;
+        this.comment = span;
     }
 
     render() {
