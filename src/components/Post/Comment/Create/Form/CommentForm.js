@@ -19,10 +19,19 @@ class CommentForm extends Component {
         });
     }
 
-    addComment(e) {
+    chengComments(e) {
         e.preventDefault();
-        this.props.addComment(this.comment, this.state.rating, this.props.id);
-        console.log(this.comment);
+        if (this.props.index) {
+            this.props.chengComments(
+                this.comment,
+                this.state.rating,
+                this.props.id,
+                this.props.action,
+                this.props.index
+            );
+            return;
+        }
+        this.props.chengComments(this.comment, this.state.rating, this.props.id, this.props.action);
     }
 
     commentChenged(e) {
@@ -41,7 +50,7 @@ class CommentForm extends Component {
 
     render() {
         return (
-            <form className={styles.commentForm} onSubmit={(e) => this.addComment(e)}>
+            <form className={styles.commentForm} onSubmit={(e) => this.chengComments(e)}>
                 <textarea
                     type="text"
                     placeholder="Comment"

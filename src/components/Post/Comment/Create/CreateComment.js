@@ -19,8 +19,12 @@ class CreateComment extends Component {
                 </button>
                 {this.state.formVisibility && (
                     <CommentForm
+                        index={this.props.index}
+                        action={this.props.action}
                         id={this.props.id}
-                        addComment={(body, rating, id) => this.props.addComment(body, rating, id)}
+                        chengComments={(body, rating, id, action, commentIndex) =>
+                            this.props.chengComments(body, rating, id, action, commentIndex)
+                        }
                     />
                 )}
             </div>

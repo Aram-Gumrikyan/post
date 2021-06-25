@@ -13,13 +13,24 @@ class PoolPost extends Component {
                 <p className={styles.description}>{this.props.description}</p>
                 <div className="comments">
                     {this.props.comments.map((comment, index) => (
-                        <Comment key={index} body={comment.body} rating={comment.rating} />
+                        <Comment
+                            key={index}
+                            body={comment.body}
+                            rating={comment.rating}
+                            index={index}
+                            id={this.props.id}
+                            type={comment.type}
+                            chengComments={(body, rating, id, action, commentIndex) =>
+                                this.props.chengComments(body, rating, id, action, commentIndex)
+                            }
+                        />
                     ))}
                 </div>
 
                 <CreateComment
+                    action="add"
                     id={this.props.id}
-                    addComment={(body, rating, id) => this.props.addComment(body, rating, id)}
+                    chengComments={(body, rating, id, action) => this.props.chengComments(body, rating, id, action)}
                 />
             </div>
         );

@@ -20,7 +20,9 @@ class Pool extends Component {
                             comments={post.comments}
                             id={post.id}
                             disabled={post.disabled}
-                            addComment={(body, rating, id) => this.props.addComment(body, rating, id)}
+                            chengComments={(body, rating, id, action, commentIndex) =>
+                                this.props.chengComments(body, rating, id, action, commentIndex)
+                            }
                         />
                     ))}
                 </div>

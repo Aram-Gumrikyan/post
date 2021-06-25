@@ -172,21 +172,34 @@ class App extends Component {
     chengPostProperty(state, index, name, action, value) {
         const posts = [...state[name]];
         const post = { ...posts[index] };
-        if (action === "toggle") {
-            post.disabled = !post.disabled;
-            posts[index] = post;
-            return posts;
-        }
 
         const comment = {
-            body: value.body,
-            rating: value.rating,
+            body: value?.body,
+            rating: value?.rating,
         };
-        const comments = [...post.comments];
-        comments.push(comment);
-        post.comments = comments;
-        posts[index] = post;
-        return posts;
+
+        switch (action) {
+            case "toggle": {
+                post.disabled = !post.disabled;
+                posts[index] = post;
+                return posts;
+            }
+            case "add": {
+                const comments = [...post.comments];
+                comments.push(comment);
+                post.comments = comments;
+                posts[index] = post;
+                return posts;
+            }
+            case "insert": {
+                comment.type = "replay";
+                const comments = [...post.comments];
+                comments.splice(value.commentIndex + 1, 0, comment);
+                post.comments = comments;
+                posts[index] = post;
+                return posts;
+            }
+        }
     }
 
     togglePostVisibility(id) {
@@ -203,14 +216,15 @@ class App extends Component {
         });
     }
 
-    addComment(body, rating, id) {
+    chengComments(body, rating, id, action, commentIndex = 0) {
         const postIndex = this.state.posts.findIndex((post) => post.id === id);
         const displayedPostIndex = this.state.displayedPosts.findIndex((post) => post.id === id);
         this.setState((state) => {
-            const posts = this.chengPostProperty(state, postIndex, "posts", "add", { body, rating });
-            const displayedPosts = this.chengPostProperty(state, displayedPostIndex, "displayedPosts", "add", {
+            const posts = this.chengPostProperty(state, postIndex, "posts", action, { body, rating, commentIndex });
+            const displayedPosts = this.chengPostProperty(state, displayedPostIndex, "displayedPosts", action, {
                 body,
                 rating,
+                commentIndex,
             });
 
             return {
@@ -263,7 +277,9 @@ class App extends Component {
                     posts={this.state.displayedPosts}
                     getPosts={(count, page) => this.getPosts(count, page)}
                     postsCount={this.state.posts.length}
-                    addComment={(body, rating, id) => this.addComment(body, rating, id)}
+                    chengComments={(body, rating, id, action, commentIndex) =>
+                        this.chengComments(body, rating, id, action, commentIndex)
+                    }
                 />
                 <aside className="lists">
                     {[1, 2].map((item) => (
