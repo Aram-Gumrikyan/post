@@ -199,6 +199,8 @@ class App extends Component {
                 posts[index] = post;
                 return posts;
             }
+            default:
+                return posts;
         }
     }
 
