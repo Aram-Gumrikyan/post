@@ -1,21 +1,28 @@
-import { Component } from "react";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
 
 import styles from "./Search.module.scss";
 
-class Search extends Component {
-    formSubmit(e) {
-        e.preventDefault();
-        const text = e.target.querySelector("#search").value;
-        this.props.search(text);
-    }
+const Search = (props) => {
+    const dispatch = useDispatch();
+    const searchInput = useRef(null);
 
-    render() {
-        return (
-            <form id="searchForm" onSubmit={(e) => this.formSubmit(e)} className={styles.search}>
-                <input type="text" name="search" id="search" placeholder="search" />
-            </form>
-        );
-    }
-}
+    const search = () => {
+        dispatch({ type: "SEARCH", payload: { text: searchInput.current.value } });
+    };
+
+    return (
+        <form
+            id="searchForm"
+            onSubmit={(e) => {
+                e.preventDefault();
+                search();
+            }}
+            className={styles.search}
+        >
+            <input ref={searchInput} type="text" name="search" id="search" placeholder="search" onChange={search} />
+        </form>
+    );
+};
 
 export default Search;

@@ -1,74 +1,72 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import classNames from "classnames";
 
 import styles from "./Pagination.module.scss";
 
 const defPropsCount = 2;
 
-class Pagination extends Component {
-    constructor(props) {
-        super(props);
+const Pagination = (props) => {
+    const dispatch = useDispatch();
+    const postsCount = useSelector((state) => state.posts.length);
 
-        this.state = {
-            count: defPropsCount,
-            pages: this.calcPages(this.props.postsCount, defPropsCount),
-            page: 1,
-        };
-        this.props.getPosts(this.state.count, 1);
-    }
+    const [count, setCount] = useState(defPropsCount);
+    const [pages, setPages] = useState(calcPages(count));
+    const [page, setPage] = useState(1);
 
-    chengPage(page) {
-        this.props.getPosts(this.state.count, page);
-        this.setState({ page });
-    }
+    useEffect(() => {
+        dispatch({ type: "GET_POSTS", payload: { count, page } });
+    }, [count, page, dispatch]);
 
-    calcPages(postsCount, count) {
+    function calcPages(count) {
         if (postsCount / count > 2 || postsCount / count === 1) {
             return Math.ceil(postsCount / count);
         }
         return 2;
     }
 
-    chengCount(e) {
-        e.preventDefault();
-        const count = +e.target.querySelector("#count").value;
+    const chengCount = (e) => {
+        const count = +e.target.value;
 
-        if (!count || count > 8 || count < 1) {
+        if (!count || count > postsCount || count < 1) {
             return;
         }
 
-        const pages = this.calcPages(this.props.postsCount, count);
+        const pages = calcPages(count);
 
-        this.setState({ count, pages, page: 1 });
-        this.props.getPosts(count, 1);
-    }
+        setCount(count);
+        setPages(pages);
+        setPage(1);
+    };
 
-    render() {
-        const pages = [];
+    const pagesNavigation = [];
 
-        for (let i = 1; i <= this.state.pages; i++) {
-            pages.push(
-                <li key={i} className={`${this.state.page === i ? styles.activ : ""}`}>
-                    <button onClick={() => this.chengPage(i)}>{i}</button>
-                </li>
-            );
-        }
-        return (
-            <div className={styles.pagination}>
-                <ul>{pages}</ul>
-                <form onSubmit={(e) => this.chengCount(e)} id="countForm">
-                    <label htmlFor="count">Count: </label>
-                    <input
-                        type="number"
-                        name="count"
-                        id="count"
-                        max={this.props.postsCount}
-                        min="1"
-                        defaultValue={this.state.count}
-                    />
-                </form>
-            </div>
+    for (let i = 1; i <= pages; i++) {
+        const className = classNames({ [styles.activ]: page === i });
+        pagesNavigation.push(
+            <li key={i} className={className}>
+                <button onClick={() => setPage(i)}>{i}</button>
+            </li>
         );
     }
-}
+
+    return (
+        <div className={styles.pagination}>
+            <ul>{pagesNavigation}</ul>
+            <form onSubmit={(e) => e.preventDefault()} id="countForm">
+                <label htmlFor="count">Count: </label>
+                <input
+                    type="number"
+                    name="count"
+                    id="count"
+                    max={postsCount}
+                    min="1"
+                    defaultValue={count}
+                    onChange={(e) => chengCount(e)}
+                />
+            </form>
+        </div>
+    );
+};
 
 export default Pagination;

@@ -1,90 +1,73 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import StarRatings from "react-star-ratings";
 
 import styles from "./CommentForm.module.scss";
 
-class CommentForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            rating: 0,
-        };
-        this.comment = <span>{""}</span>;
-        this.emojis = ["-smile-beam", "-sad-cry", "-grin-squint-tears", "-sad-tear"];
-    }
+const CommentForm = ({ index, action, id }) => {
+    const dispatch = useDispatch();
 
-    changeRating(newRating) {
-        this.setState({
-            rating: newRating,
-        });
-    }
+    const [rating, setRating] = useState(0);
+    let body = <span>{""}</span>;
+    const emojis = ["-smile-beam", "-sad-cry", "-grin-squint-tears", "-sad-tear"];
 
-    chengComments(e) {
+    const addComment = (e) => {
         e.preventDefault();
-        if (this.props.index) {
-            this.props.chengComments(
-                this.comment,
-                this.state.rating,
-                this.props.id,
-                this.props.action,
-                this.props.index
-            );
+        if (index) {
+            dispatch({
+                type: "ADD_COMMENT",
+                payload: { body, rating, id, actionType: action, commentIndex: index },
+            });
             return;
         }
-        this.props.chengComments(this.comment, this.state.rating, this.props.id, this.props.action);
-    }
 
-    commentChenged(e) {
+        dispatch({ type: "ADD_COMMENT", payload: { body, rating, id, actionType: action } });
+    };
+
+    const commentChenged = (e) => {
         const newComment = e.target.value;
-        const oldComment = this.comment.props.children;
+        const oldComment = body.props.children;
         const span = <span>{[oldComment, newComment[newComment.length - 1]]}</span>;
-        this.comment = span;
-    }
+        body = span;
+    };
 
-    emojiClicked(e) {
+    const emojiClicked = (e) => {
         const emoji = e.target;
         const emojiReact = <i className={emoji.className} key={emoji.getAttribute("index")}></i>;
-        const span = <span>{[this.comment.props.children, emojiReact]}</span>;
-        this.comment = span;
-    }
+        const span = <span>{[body.props.children, emojiReact]}</span>;
+        body = span;
+    };
 
-    render() {
-        return (
-            <form className={styles.commentForm} onSubmit={(e) => this.chengComments(e)}>
-                <textarea
-                    type="text"
-                    placeholder="Comment"
-                    name="comment"
-                    id="comment"
-                    onChange={(e) => this.commentChenged(e)}
-                />
-                <div className="emoji">
-                    {this.emojis.map((emoji, index) => (
-                        <button key={index} type="button">
-                            <i
-                                index={index}
-                                className={`fas fa${emoji} fa-2x emoji`}
-                                onClick={(e) => this.emojiClicked(e)}
-                            ></i>
-                        </button>
-                    ))}
-                </div>
-                <StarRatings
-                    rating={this.state.rating}
-                    numberOfStars={5}
-                    starEmptyColor="#252A34"
-                    starRatedColor={this.state.rating > 4 ? "green" : this.state.rating > 3 ? "yellow" : "red"}
-                    starHoverColor="#FFC947"
-                    changeRating={(newRating) => this.changeRating(newRating)}
-                    starDimension="25px"
-                    starSpacing="0px"
-                    name="rating"
-                />
-                <button type="submit">Submit</button>
-                <div id="newRoot"></div>
-            </form>
-        );
-    }
-}
+    return (
+        <form className={styles.commentForm} onSubmit={(e) => addComment(e)}>
+            <textarea
+                type="text"
+                placeholder="Comment"
+                name="comment"
+                id="comment"
+                onChange={(e) => commentChenged(e)}
+            />
+            <div className="emoji">
+                {emojis.map((emoji, index) => (
+                    <button key={index} type="button">
+                        <i index={index} className={`fas fa${emoji} fa-2x emoji`} onClick={(e) => emojiClicked(e)}></i>
+                    </button>
+                ))}
+            </div>
+            <StarRatings
+                rating={rating}
+                numberOfStars={5}
+                starEmptyColor="#252A34"
+                starRatedColor={rating > 4 ? "green" : rating > 3 ? "yellow" : "red"}
+                starHoverColor="#FFC947"
+                changeRating={(newRating) => setRating(newRating)}
+                starDimension="25px"
+                starSpacing="0px"
+                name="rating"
+            />
+            <button type="submit">Submit</button>
+        </form>
+    );
+};
 
 export default CommentForm;
